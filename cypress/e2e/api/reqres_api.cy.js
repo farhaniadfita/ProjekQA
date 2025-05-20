@@ -1,87 +1,125 @@
 describe('Automation API Reqres.in', () => {
   const baseUrl = 'https://reqres.in/api';
+  const headers = {
+    'x-api-key': 'reqres-free-v1'
+  };
 
-  // GET list users
+  
   it('GET - List Users', () => {
-    cy.request(`${baseUrl}/users?page=2`).then((response) => {
+    cy.request({
+      method: 'GET',
+      url: `${baseUrl}/users?page=2`,
+      headers
+    }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('data');
     });
   });
 
-  // GET single user
+  
   it('GET - Single User', () => {
-    cy.request(`${baseUrl}/users/2`).then((response) => {
+    cy.request({
+      method: 'GET',
+      url: `${baseUrl}/users/2`,
+      headers
+    }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.data.id).to.eq(2);
     });
   });
 
-  // GET single user not found
+  
   it('GET - Single User Not Found', () => {
     cy.request({
+      method: 'GET',
       url: `${baseUrl}/users/23`,
+      headers,
       failOnStatusCode: false
     }).then((response) => {
       expect(response.status).to.eq(404);
     });
   });
 
-  // POST - Create User
+  
   it('POST - Create User', () => {
-    cy.request('POST', `${baseUrl}/users`, {
-      name: 'Farhani',
-      job: 'QA'
+    cy.request({
+      method: 'POST',
+      url: `${baseUrl}/users`,
+      headers,
+      body: {
+        name: 'Farhani',
+        job: 'QA'
+      }
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('name', 'Farhani');
     });
   });
 
-  // PUT - Update User
+  
   it('PUT - Update User', () => {
-    cy.request('PUT', `${baseUrl}/users/2`, {
-      name: 'Farhani Update',
-      job: 'QA Senior'
+    cy.request({
+      method: 'PUT',
+      url: `${baseUrl}/users/2`,
+      headers,
+      body: {
+        name: 'Farhani Update',
+        job: 'QA Senior'
+      }
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('name', 'Farhani Update');
     });
   });
 
-  // PATCH - Update User
+  
   it('PATCH - Update User', () => {
-    cy.request('PATCH', `${baseUrl}/users/2`, {
-      job: 'QA Lead'
+    cy.request({
+      method: 'PATCH',
+      url: `${baseUrl}/users/2`,
+      headers,
+      body: {
+        job: 'QA Lead'
+      }
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('job', 'QA Lead');
     });
   });
 
-  // DELETE - Delete User
+  
   it('DELETE - Delete User', () => {
-    cy.request('DELETE', `${baseUrl}/users/2`).then((response) => {
+    cy.request({
+      method: 'DELETE',
+      url: `${baseUrl}/users/2`,
+      headers
+    }).then((response) => {
       expect(response.status).to.eq(204);
     });
   });
 
-  // POST - Register (successful)
+  
   it('POST - Register Successful', () => {
-    cy.request('POST', `${baseUrl}/register`, {
-      email: 'eve.holt@reqres.in',
-      password: 'pistol'
+    cy.request({
+      method: 'POST',
+      url: `${baseUrl}/register`,
+      headers,
+      body: {
+        email: 'eve.holt@reqres.in',
+        password: 'pistol'
+      }
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('token');
     });
   });
 
-  // POST - Register (unsuccessful)
+  
   it('POST - Register Unsuccessful', () => {
     cy.request({
       method: 'POST',
       url: `${baseUrl}/register`,
+      headers,
       failOnStatusCode: false,
       body: {
         email: 'sydney@fife'
@@ -91,22 +129,28 @@ describe('Automation API Reqres.in', () => {
     });
   });
 
-  // POST - Login (successful)
+  
   it('POST - Login Successful', () => {
-    cy.request('POST', `${baseUrl}/login`, {
-      email: 'eve.holt@reqres.in',
-      password: 'cityslicka'
+    cy.request({
+      method: 'POST',
+      url: `${baseUrl}/login`,
+      headers,
+      body: {
+        email: 'eve.holt@reqres.in',
+        password: 'cityslicka'
+      }
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('token');
     });
   });
 
-  // POST - Login (unsuccessful)
+  
   it('POST - Login Unsuccessful', () => {
     cy.request({
       method: 'POST',
       url: `${baseUrl}/login`,
+      headers,
       failOnStatusCode: false,
       body: {
         email: 'peter@klaven'
@@ -116,9 +160,13 @@ describe('Automation API Reqres.in', () => {
     });
   });
 
-  // GET - Delayed Response
+  
   it('GET - Delayed Response', () => {
-    cy.request(`${baseUrl}/users?delay=3`).then((response) => {
+    cy.request({
+      method: 'GET',
+      url: `${baseUrl}/users?delay=3`,
+      headers
+    }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('data');
     });

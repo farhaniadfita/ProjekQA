@@ -5,16 +5,20 @@ describe('Fitur Login OrangeHRM - POM Version', () => {
     loginPage.visit();
   });
 
-  it('TC01 - Login sukses dengan kredensial valid', () => {
-    cy.intercept('GET', '**/api/v2/dashboard/employees/action-summary').as('dashboardRequest');
+  it('TC01 - Login dengan username & password valid', () => {
+  cy.intercept('POST', '**/auth/login').as('postLogin');
 
-    loginPage.enterUsername('Admin');
-    loginPage.enterPassword('admin123');
-    loginPage.clickLogin();
+  loginPage.fillUsername('Admin');
+  loginPage.fillPassword('admin123');
+  loginPage.submit();
 
-    cy.wait('@dashboardRequest', { timeout: 10000 }).its('response.statusCode').should('eq', 200);
-    cy.url().should('include', '/dashboard');
+  cy.wait('@postLogin').then(({ response }) => {
+    expect(response.statusCode).to.eq(200);
   });
+
+  cy.url().should('include', '/dashboard');
+});
+
 
   it('TC02 - Gagal login: username tidak valid', () => {
     loginPage.enterUsername('salahuser');
